@@ -1,7 +1,3 @@
-'LaboratoryWork1/main/Debug 
-'LaboratoryWork1/main/Debug' 
-'LaboratoryWork1/main/Debug/' 
-'LaboratoryWork1/main.vcxproj' 
 LaboratoryWork1/main/Debug 
 LaboratoryWork1/main.vcxproj 
 LaboratoryWork1/main/main.vcxproj 
@@ -9,3 +5,9 @@ LaboratoryWork1/main/main.vcxproj.filters
 LaboratoryWork1/main/main.vcxproj.user 
 .vs/ 
 LaboratoryWork1/main/main/ 
+LaboratoryWork2/main/Debug 
+LaboratoryWork2/main.vcxproj 
+LaboratoryWork2/main/main.vcxproj 
+LaboratoryWork2/main/main.vcxproj.filters 
+LaboratoryWork2/main/main.vcxproj.user 
+LaboratoryWork2/main/main/ 
