@@ -4,9 +4,6 @@
 #include <conio.h>
 #include <iomanip>
 
-//test
-
-
 using namespace std;
 
 static const int LEN = 25;
@@ -76,6 +73,8 @@ class Employee {
 	int age, experience;
 public:
 	Employee();
+	void Employee2(int);
+	Employee(string surname, string name, string patronymic, string type, int age, int experience);
 	virtual int viewing() const;
 	virtual int editing();
 	const string getSurname() const;
@@ -94,7 +93,9 @@ public:
 
 Employee::Employee() :
 	surname("No surname"), name("No name"), patronymic("No patronymic"),
-	age(0), experience(0), type("Employee") {
+	age(0), experience(0), type("Employee") {}
+
+void Employee::Employee2(int) {
 	while ((this->surname = input_string("Enter surname:")) == "NULL") {
 		cout << "Incorrect value!" << endl;
 		press_any_character();
@@ -116,6 +117,9 @@ Employee::Employee() :
 		press_any_character();
 	}
 }
+
+Employee::Employee(string surname, string name, string patronymic, string type, int age, int experience) :
+	surname(surname), name(name), patronymic(patronymic), type(type), age(age), experience(experience) {}
 
 int Employee::viewing() const {
 	cout.setf(ios::left | ios::fixed);
@@ -252,18 +256,26 @@ class Musician : public Employee {
 	int number_perfomances;
 public:
 	Musician();
+	Musician(float);
+	Musician(int number_perfomances);
 	virtual int viewing() const;
 	virtual int editing();
 };
 
 Musician::Musician() :
-	number_perfomances(0) {
+	number_perfomances(0) {}
+
+Musician::Musician(float) {
+	Musician::Employee2(0);
 	Musician::Employee::setType("Musician");
 	while ((this->number_perfomances = input_integer("Enter number of perfomances:", 0)) == -1) {
 		cout << "Incorrect value!" << endl;
 		press_any_character();
 	}
 }
+
+Musician::Musician(int number_perfomances) :
+	number_perfomances(number_perfomances) {}
 
 int Musician::viewing() const {
 	cout.setf(ios::left | ios::fixed);
@@ -319,18 +331,26 @@ class Administrator : public Employee {
 	string position;
 public:
 	Administrator();
+	Administrator(int);
+	Administrator(string position);
 	virtual int viewing() const;
 	virtual int editing();
 };
 
 Administrator::Administrator() :
-	position("No position") {
+	position("No position") {}
+
+Administrator::Administrator(int) {
+	Administrator::Employee2(0);
 	Administrator::Employee::setType("Administrator");
 	while ((this->position = input_string("Enter position:")) == "NULL") {
 		cout << "Incorrect value!" << endl;
 		press_any_character();
 	}
 }
+
+Administrator::Administrator(string position) : 
+	position(position) {}
 
 int Administrator::viewing() const {
 	cout.setf(ios::left | ios::fixed);
@@ -387,12 +407,17 @@ class Vocalist : public Musician {
 		voice_genre; //soprano, alt, tenor, bariton
 public:
 	Vocalist();
+	Vocalist(int);
+	Vocalist(string genre, string voice_genre);
 	virtual int viewing() const;
 	virtual int editing();
 };
 
 Vocalist::Vocalist() :
-	genre("No genre"), voice_genre("No voice genre") {
+	genre("No genre"), voice_genre("No voice genre") {}
+
+Vocalist::Vocalist(int) {
+	Vocalist::Employee2(0);
 	Vocalist::Employee::setType("Vocalist");
 	while ((this->genre = input_string("Enter genre:")) == "NULL") {
 		cout << "Incorrect value!" << endl;
@@ -403,6 +428,9 @@ Vocalist::Vocalist() :
 		press_any_character();
 	}
 }
+
+Vocalist::Vocalist(string genre, string voice_genre) :
+	genre(genre), voice_genre(voice_genre) {}
 
 int Vocalist::viewing() const {
 	cout.setf(ios::left | ios::fixed);
@@ -466,12 +494,17 @@ class Instrumentalist : public Musician {
 	string type_instrument;
 public:
 	Instrumentalist();
+	Instrumentalist(int);
+	Instrumentalist(string type_instrument);
 	virtual int viewing() const;
 	virtual int editing();
 };
 
 Instrumentalist::Instrumentalist() :
-	type_instrument("No type instrument") {
+	type_instrument("No type instrument") {}
+
+Instrumentalist::Instrumentalist(int) {
+	Instrumentalist::Employee2(0);
 	Instrumentalist::Employee::setType("Instrumentalist");
 	while ((this->type_instrument = input_string("Enter type of instrument:")) == "NULL") {
 		cout << "Incorrect value!" << endl;
@@ -479,9 +512,12 @@ Instrumentalist::Instrumentalist() :
 	}
 }
 
+Instrumentalist::Instrumentalist(string type_instrument) :
+	type_instrument(type_instrument) {}
+
 int Instrumentalist::viewing() const {
 	cout.setf(ios::left | ios::fixed);
-	cout << "Type of instrument:" << this->type_instrument << endl;
+	cout << setw(LEN) << setfill(' ') << "Type of instrument:" << this->type_instrument << endl;
 	cout.unsetf(ios::left | ios::fixed);
 	return Instrumentalist::Employee::viewing();
 }
@@ -650,16 +686,16 @@ int Orchestra::addition() {
 			Employee* new_Employee = nullptr;
 			switch (option) {
 			case 1:
-				new_Employee = new Musician;
+				new_Employee = new Musician(0.0f);
 				break;
 			case 2:
-				new_Employee = new Administrator;
+				new_Employee = new Administrator(0);
 				break;
 			case 3:
-				new_Employee = new Vocalist;
+				new_Employee = new Vocalist(0);
 				break;
 			case 4:
-				new_Employee = new Instrumentalist;
+				new_Employee = new Instrumentalist(0);
 				break;
 			case 5:
 				buf_number = -1;
