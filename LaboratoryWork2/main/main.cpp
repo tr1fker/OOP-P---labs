@@ -3,6 +3,7 @@
 #include <vector>
 #include <conio.h>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -83,12 +84,28 @@ public:
 	const string getType() const;
 	const int getAge() const;
 	const int getExperience() const;
+	string& getAdrSurname();
+	string& getAdrName();
+	string& getAdrPatronymic();
+	string& getAdrType();
+	int& getAdrAge();
+	int& getAdrExperience();
 	int setSurname(string new_surname);
 	int setName(string new_name);
 	int setPatronymic(string new_patronymic);
 	int setType(string new_type);
 	int setAge(int new_age);
 	int setExperience(int new_experience);
+	friend ostream& operator<<(ostream& os, const Employee& employee) {
+		os << employee.surname << ' ' << employee.name << ' ' << employee.patronymic
+			<< ' ' << employee.type << ' ' << employee.age << ' ' << employee.experience;
+		return os;
+	}
+	friend istream& operator>>(istream& is, Employee& employee) {
+		is >> employee.surname >> employee.name >> employee.patronymic
+			>> employee.type >> employee.age >> employee.experience;
+		return is;
+	}
 };
 
 Employee::Employee() :
@@ -222,6 +239,30 @@ const int Employee::getExperience() const {
 	return this->experience;
 }
 
+string& Employee::getAdrSurname() {
+	return this->surname;
+}
+
+string& Employee::getAdrName() {
+	return this->name;
+}
+
+string& Employee::getAdrPatronymic() {
+	return this->patronymic;
+}
+
+string& Employee::getAdrType() {
+	return this->type;
+}
+
+int& Employee::getAdrAge() {
+	return this->age;
+}
+
+int& Employee::getAdrExperience() {
+	return this->experience;
+}
+
 int Employee::setSurname(string new_surname) {
 	this->surname = new_surname;
 	return 0;
@@ -260,6 +301,19 @@ public:
 	Musician(int number_perfomances);
 	virtual int viewing() const;
 	virtual int editing();
+	friend ostream& operator<<(ostream& os, const Musician& object) {
+		os << object.number_perfomances << ' ' << object.getSurname() << ' '
+			<< object.getName() << ' ' << object.getPatronymic() << ' '
+			<< object.getType() << ' ' << object.getAge() << ' '
+			<< object.getExperience() << endl;
+		return os;
+	}
+	friend istream& operator>>(istream& is, Musician& object) {
+		is >> object.number_perfomances >> object.getAdrSurname() >> object.getAdrName()
+			>> object.getAdrPatronymic() >> object.getAdrType()
+			>> object.getAdrAge() >> object.getAdrExperience();
+		return is;
+	}
 };
 
 Musician::Musician() :
@@ -335,6 +389,19 @@ public:
 	Administrator(string position);
 	virtual int viewing() const;
 	virtual int editing();
+	friend ostream& operator<<(ostream& os, const Administrator& object) {
+		os << object.position << ' ' << object.getSurname() << ' '
+			<< object.getName() << ' ' << object.getPatronymic() << ' '
+			<< object.getType() << ' ' << object.getAge() << ' '
+			<< object.getExperience() << endl;
+		return os;
+	}
+	friend istream& operator>>(istream& is, Administrator& object) {
+		is >> object.position >> object.getAdrSurname() >> object.getAdrName()
+			>> object.getAdrPatronymic() >> object.getAdrType()
+			>> object.getAdrAge() >> object.getAdrExperience();
+		return is;
+	}
 };
 
 Administrator::Administrator() :
@@ -411,6 +478,19 @@ public:
 	Vocalist(string genre, string voice_genre);
 	virtual int viewing() const;
 	virtual int editing();
+	friend ostream& operator<<(ostream& os, const Vocalist& object) {
+		os << object.genre << ' ' << object.voice_genre << ' ' << object.getSurname() << ' '
+			<< object.getName() << ' ' << object.getPatronymic() << ' '
+			<< object.getType() << ' ' << object.getAge() << ' '
+			<< object.getExperience() << endl;
+		return os;
+	}
+	friend istream& operator>>(istream& is, Vocalist& object) {
+		is >> object.genre >> object.voice_genre >> object.getAdrSurname() >> object.getAdrName()
+			>> object.getAdrPatronymic() >> object.getAdrType()
+			>> object.getAdrAge() >> object.getAdrExperience();
+		return is;
+	}
 };
 
 Vocalist::Vocalist() :
@@ -498,6 +578,19 @@ public:
 	Instrumentalist(string type_instrument);
 	virtual int viewing() const;
 	virtual int editing();
+	friend ostream& operator<<(ostream& os, const Instrumentalist& object) {
+		os << object.type_instrument << ' ' << object.getSurname() << ' '
+			<< object.getName() << ' ' << object.getPatronymic() << ' '
+			<< object.getType() << ' ' << object.getAge() << ' '
+			<< object.getExperience() << endl;
+		return os;
+	}
+	friend istream& operator>>(istream& is, Instrumentalist& object) {
+		is >> object.type_instrument >> object.getAdrSurname() >> object.getAdrName()
+			>> object.getAdrPatronymic() >> object.getAdrType()
+			>> object.getAdrAge() >> object.getAdrExperience();
+		return is;
+	}
 };
 
 Instrumentalist::Instrumentalist() :
@@ -570,6 +663,8 @@ class Orchestra {
 	vector<Employee*> employees;
 public:
 	Orchestra();
+	void readFile(const string nameFile);
+	void writeFile(const string nameFile);
 	int viewing() const;
 	int addition();
 	int removal();
@@ -581,6 +676,90 @@ public:
 
 Orchestra::Orchestra() :
 	count_employees(0) {}
+
+void Orchestra::readFile(const string nameFile) {
+	ifstream file(nameFile, ios::out | ios::binary);
+	if (!file) {
+		cout << "Невозможно открыть файл!" << endl;
+		press_any_character();
+		return;
+	}
+	if (file.is_open()) {
+		if (file.eof()) {
+			file.close();
+			return;
+		}
+		while (file) {
+			int type;
+			file >> type;
+			if (!file)
+				break;
+			Employee* employee;
+			if (type == 0) {
+				Musician *musician = new Musician;
+				file >> *musician;
+				employee = musician;
+			}
+			else if (type == 1) {
+				Instrumentalist* instrumentalist = new Instrumentalist;
+				file >> *instrumentalist;
+				employee = instrumentalist;
+			}
+			else if (type == 2) {
+				Vocalist* vocalist = new Vocalist;
+				file >> *vocalist;
+				employee = vocalist;
+			}
+			else if (type == 3){
+				Administrator* administrator = new Administrator;
+				file >> *administrator;
+				employee = administrator;
+			}
+			else
+				break;
+			this->employees.push_back(employee);
+			this->count_employees++;
+		}
+		file.close();
+		return;
+	}
+	cout << "Файл не был открыт!" << endl;
+	press_any_character();
+}
+
+void Orchestra::writeFile(const string nameFile) {
+	ofstream file(nameFile, ios::out | ios::binary);
+	if (!file) {
+		cout << "Невозможно открыть файл!" << endl;
+		press_any_character();
+		return;
+	}
+	if (file.is_open()) {
+		if (file.eof()) {
+			file.close();
+			return;
+		}
+		for (Employee* employee: this->employees) {
+			string type = employee->getType();
+			if (type == "Musician") {
+				file << "0 " << *(Musician*)(employee);
+			}
+			else if (type == "Instrumentalist") {
+				file << "1 " << *(Instrumentalist*)(employee);
+			}
+			else if (type == "Vocalist") {
+				file << "2 " << *(Vocalist*)(employee);
+			}
+			else {
+				file << "3 " << *(Administrator*)(employee);
+			}
+		}
+		file.close();
+		return;
+	}
+	cout << "Файл не был открыт!" << endl;
+	press_any_character();
+}
 
 int Orchestra::viewing() const {
 	system("cls");
@@ -998,6 +1177,7 @@ int main(void) {
 	cout.setf(ios::basefield | ios::adjustfield | ios::floatfield);
 	bool program_is_work = true;
 	Orchestra orchestra;
+	orchestra.readFile("E:\\Учеба\\Семестр3\\OOP-P---labs\\LaboratoryWork2\\main\\data.DAT");
 	while (program_is_work) {
 		int choice = input_integer(MENU, 1, 7);
 		switch (choice) {
@@ -1010,15 +1190,19 @@ int main(void) {
 			break;
 		case 2:
 			orchestra.addition();
+			orchestra.writeFile("E:\\Учеба\\Семестр3\\OOP-P---labs\\LaboratoryWork2\\main\\data.DAT");
 			break;
 		case 3:
 			orchestra.removal();
+			orchestra.writeFile("E:\\Учеба\\Семестр3\\OOP-P---labs\\LaboratoryWork2\\main\\data.DAT");
 			break;
 		case 4:
 			orchestra.editing();
+			orchestra.writeFile("E:\\Учеба\\Семестр3\\OOP-P---labs\\LaboratoryWork2\\main\\data.DAT");
 			break;
 		case 5:
 			orchestra.sorting();
+			orchestra.writeFile("E:\\Учеба\\Семестр3\\OOP-P---labs\\LaboratoryWork2\\main\\data.DAT");
 			break;
 		case 6:
 			orchestra.search_by_parameters();
